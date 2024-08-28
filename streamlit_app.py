@@ -1,11 +1,22 @@
 import streamlit as st
 import pickle
 import pandas as pd
+import requests
+from io import BytesIO
+
+# Function to download file from Google Drive
+def download_file_from_google_drive(file_id):
+    url = f'https://drive.google.com/uc?export=download&id={file_id}'
+    response = requests.get(url)
+    return BytesIO(response.content)
 
 # Load the movies dictionary and similarity matrix
-movies_dict = pickle.load(open('movie_dict.pkl', 'rb'))
+movies_dict_file = download_file_from_google_drive('1VRGfkB4y56OwXYrTOlKE3M-xwwy-o4QD')
+movies_dict = pickle.load(movies_dict_file)
 movies = pd.DataFrame(movies_dict)
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+
+similarity_file = download_file_from_google_drive('1DzRESHFsckZyM2tHdOphRWX_fWMcAuS6')
+similarity = pickle.load(similarity_file)
 
 # Define the recommendation function
 def recommend(movie):
